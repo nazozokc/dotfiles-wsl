@@ -5,7 +5,6 @@
 # Nazozo Dotfiles-wsl
 
 このリポジトリは WSL 対応で Nix による dotfiles 管理を行う構成です。  
-macOS では **nix-darwin** を利用し、Home Manager と連携させています。
 
 ---
 
@@ -22,8 +21,6 @@ macOS では **nix-darwin** を利用し、Home Manager と連携させていま
 ## 対応 OS
 
 - Linux: `x86_64-linux` (Arch Linux など)
-- Linux: `aarch64-linux`(ARM linux)
-- macOS: `aarch64-darwin` (Apple Silicon)
 
 ---
 
