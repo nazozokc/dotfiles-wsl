@@ -4,8 +4,6 @@ with pkgs;
 [
   # Editor
   neovim
-  vscode
-  zed
 
   # shell
   fish
@@ -30,6 +28,7 @@ with pkgs;
   ncdu
   delta
   tldr
+  gnumake
   pet
   just
 
