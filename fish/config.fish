@@ -182,4 +182,11 @@ set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
 # OpenClaw Completion
-source "/home/nazozokc/.openclaw/completions/openclaw.fish"
+
+# nix
+if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+end
+
+fish_add_path $HOME/.nix-profile/bin
+fish_add_path /nix/var/nix/profiles/default/bin
