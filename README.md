@@ -4,7 +4,7 @@
 
 # Nazozo Dotfiles-wsl
 
-このリポジトリは WSL 対応で Nix による dotfiles 管理を行う構成です。  
+このリポジトリは WSL 対応で Nix による dotfiles 管理を行う構成です。
 
 ---
 
