@@ -1,12 +1,9 @@
 { pkgs, ... }:
 
-let
-  username = "nazozokc";
-in
 {
-  home.username = username;
+  home.username = "nazozokc";
 
-  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/nazozokc" else "/home/nazozokc";
 
   home.stateVersion = "24.05";
 
