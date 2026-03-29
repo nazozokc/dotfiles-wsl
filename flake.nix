@@ -35,18 +35,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # macOS システム設定管理
-    darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # GitHub CLI 拡張: コントリビューショングラフ表示
-    gh-graph = {
-      url = "github:kawarimidoll/gh-graph";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # GitHub CLI 拡張: 日報生成
     gh-nippou = {
       url = "github:ryoppippi/gh-nippou";
@@ -87,8 +75,6 @@
       nixpkgs,
       flake-parts,
       home-manager,
-      darwin,
-      gh-graph,
       gh-nippou,
       gh-brag,
       nix-index-database,
@@ -113,28 +99,7 @@
           overlays = [
             (_: _: { _llm-agents = llm-agents; })
             overlay
-            gh-graph.overlays.default
             gh-nippou.overlays.default
-          ];
-        };
-
-      # Linux 向け home-manager 設定を生成するヘルパー
-      # x86_64 / aarch64 で共通のモジュール構成を使い回す
-      mkLinuxHomeConfig =
-        system:
-        let
-          pkgs = pkgsFor system;
-        in
-        home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-            nix-index-database.homeModules.nix-index
-            ./nix/shared.nix
-            (import ./nix/modules/home-manager/tools-read.nix { inherit pkgs; })
-            ./nix/modules/linux/system.nix
-            ./nix/modules/home-manager/dotfiles-link.nix
-            agent-skills-nix.homeManagerModules.default
-            ./nix/modules/home-manager/agent-skills.nix
           ];
         };
 
@@ -145,9 +110,7 @@
         ./nix/modules/home-manager/packages/treefmt.nix
       ];
       systems = [
-        "x86_64-linux" # メイン PC (Arch Linux)
-        "aarch64-linux" # ARM Linux (VPS など)
-        "aarch64-darwin" # macOS (Apple Silicon)
+        "x86_64-linux" # WSL
       ];
 
       # -------------------------------------------------------------------
@@ -158,36 +121,11 @@
         let
           pkgs = pkgsFor system;
 
-          # システム判定
-          isDarwin = builtins.match ".*-darwin" system != null;
-
-          # nix run .#build で参照するビルドターゲット
-          hmConfig =
-            if isDarwin then
-              "darwinConfigurations.${username}.system"
-            else
-              "homeConfigurations.${username}.activationPackage";
-
-          # nix run .#switch で渡す --flake ターゲット
-          flakeTarget =
-            if isDarwin then
-              ".#${username}"
-            else
-              ".#${username}${if system == "aarch64-linux" then "-aarch64" else ""}";
-
-          # app 実行時に表示する人間向けのシステム名
-          sysLabel =
-            if system == "x86_64-linux" then
-              "Linux (x86_64)"
-            else if system == "aarch64-linux" then
-              "Linux (aarch64)"
-            else if system == "aarch64-darwin" then
-              "macOS (Apple Silicon)"
-            else
-              system;
+          flakeTarget = ".#${username}";
+          hmConfig = "homeConfigurations.${username}.activationPackage";
 
           printInfo = cmd: ''
-            echo "  system : ${sysLabel}"
+            echo "  system : x86_64-linux (WSL)"
             echo "  target : ${flakeTarget}"
             echo "  cmd    : ${cmd}"
             echo ""
@@ -201,12 +139,7 @@
               program = "${pkgs.writeShellScriptBin "switch" ''
                 set -eo pipefail
                 ${printInfo "switch"}
-                ${
-                  if isDarwin then
-                    "sudo nix run nix-darwin -- switch --flake ${flakeTarget}"
-                  else
-                    "nix run nixpkgs#home-manager -- switch --flake ${flakeTarget}"
-                } |& ${pkgs.nix-output-monitor}/bin/nom
+                nix run nixpkgs#home-manager -- switch --flake ${flakeTarget} |& ${pkgs.nix-output-monitor}/bin/nom
               ''}/bin/switch";
             };
 
@@ -236,34 +169,16 @@
       # flake: perSystem に乗らない静的な出力 (homeConfigurations など)
       # -------------------------------------------------------------------
       flake = {
-        # Linux 向け home-manager 設定
-        homeConfigurations = {
-          ${username} = mkLinuxHomeConfig "x86_64-linux";
-          "${username}-aarch64" = mkLinuxHomeConfig "aarch64-linux";
-        };
-
-        # macOS 向け nix-darwin 設定
-        darwinConfigurations.${username} = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = { inherit username; };
+        homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+          pkgs = pkgsFor "x86_64-linux";
           modules = [
-            nix-index-database.darwinModules.nix-index
-            ./nix/modules/darwin/system.nix
-            home-manager.darwinModules.home-manager
-            {
-              home-manager.users.${username} = {
-                imports = [
-                  ./nix/shared.nix
-                  (import ./nix/modules/home-manager/tools-read.nix {
-                    pkgs = pkgsFor "aarch64-darwin";
-                  })
-                  ./nix/modules/home-manager/darwin.nix
-                  ./nix/modules/home-manager/dotfiles-link.nix
-                  agent-skills-nix.homeManagerModules.default
-                  ./nix/modules/home-manager/agent-skills.nix
-                ];
-              };
-            }
+            nix-index-database.homeModules.nix-index
+            ./nix/shared.nix
+            (import ./nix/modules/home-manager/tools-read.nix { pkgs = pkgsFor "x86_64-linux"; })
+            ./nix/modules/linux/system.nix
+            ./nix/modules/home-manager/dotfiles-link.nix
+            agent-skills-nix.homeManagerModules.default
+            ./nix/modules/home-manager/agent-skills.nix
           ];
         };
       };
