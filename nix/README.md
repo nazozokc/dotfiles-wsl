@@ -2,64 +2,52 @@
 
 ## 概要
 
-このdotfilesは `flake.nix` をエントリーポイントとし、Linux/macOS両対応の開発環境を構築します。
+この dotfiles は `flake.nix` をエントリーポイントとし、Linux (WSL) 対応の開発環境を構築します。
 
 ## システム構成
 
-| コンポーネント     | Linux, ARM-linux | macOS                         |
-| ------------------ | ---------------- | ----------------------------- |
-| システム設定       | home-manager     | nix-darwin                    |
-| ユーザーパッケージ | home-manager     | home-manager (nix-darwin統合) |
-| シェル             | fish             | fish                          |
+| コンポーネント     | Linux (x86_64) |
+| ------------------ | -------------- |
+| システム設定       | home-manager   |
+| ユーザーパッケージ | home-manager   |
+| シェル             | fish           |
 
 ## パッケージ管理のアーキテクチャ
 
 ### 共通パッケージ (`nix/modules/home-manager/packages/default.nix`)
 
-以下のパッケージは両OS共通でインストールされます:
+以下のパッケージがインストールされます:
 
-- エディタ: neovim, vscode, zed
-- シェル: fish, zsh, bash, starship
-- CLIツール: jq, bat, curl, wget, zoxide, fzf, tmux, eza, yazi, bottom, just
-- Nix関連: nix-tree, direnv, cachix, niv
-- 言語: python312, nodejs_24, bun, deno, rustc
-- LSP/フォーマッタ: rust-analyzer, nil, nixd, nixfmt, stylua
-- Git関連: git, gh, ghq, lazygit, gitui
-- GUI: wezterm, audacity, spotify, discord, ghostty
+- エディタ：neovim
+- シェル：fish, zsh, bash, starship
+- CLI ツール：jq, bat, curl, wget, zoxide, fzf, tmux, eza, yazi, btop, just
+- Nix 関連：nix-tree, direnv, cachix, niv
+- 言語：python312, nodejs, bun, deno, rustc
+- LSP/フォーマッタ：rust-analyzer, nil, nixd, nixfmt, stylua
+- Git 関連：git, gh, ghq, lazygit, gitui
+- GUI：wezterm, ghostty
 
-### Linux専用パッケージ (`nix/modules/linux/system.nix`)
+### Linux 専用パッケージ (`nix/modules/linux/system.nix`)
 
 - xclip, wl-clipboard (クリップボード)
 - pulseaudio, pavucontrol (音声)
 - unzip, zip (アーカイブ)
 - nmap (ネットワーク)
 
-### macOS専用パッケージ (`nix/modules/home-manager/darwin.nix`)
-
-- coreutils, gnused, gawk, inetutils (基本コマンド)
-
-### macOSシステムパッケージ (`nix/modules/darwin/system.nix`)
-
-- git (nix-darwinのenvironment.systemPackagesで管理)
-
 ## モジュール構造
 
 ```
 nix/
 ├── modules/
-│   ├── darwin/
-│   │   └── system.nix
 │   ├── home-manager/
-│   │   ├── darwin.nix
-│   │   ├── symlinks.nix
 │   │   ├── tools-read.nix
 │   │   ├── agent-skills.nix
+│   │   ├── dotfiles-link.nix
 │   │   ├── packages/
 │   │   │   ├── base.nix
 │   │   │   ├── cli.nix
 │   │   │   ├── default.nix
 │   │   │   ├── dev.nix
-│   │   │   ├── gui.nix
 │   │   │   └── treefmt.nix
 │   │   └── program/
 │   │       └── gh/
@@ -68,9 +56,7 @@ nix/
 │       └── system.nix
 ├── overlays/
 │   ├── ai-tools.nix
-│   ├── default.nix
-│   ├── node-packages.nix
-│   └── nix-index.nix
+│   └── default.nix
 ├── README.md
 ├── cachix.nix
 └── shared.nix
@@ -79,27 +65,20 @@ nix/
 ## コマンド
 
 ```bash
-# 環境切り替え (OS自動検出)
+# 環境切り替え
 nix run .#switch
 
 # ビルドのみ (切り替えなし)
 nix run .#build
 
-# flake更新
+# flake 更新
 nix run .#update
 ```
 
-## home-managerの動作
-
-- **Linux**: home-managerが独立して動作し、~/.config/home-manager以下にファイルを生成
-- **macOS**: nix-darwinのモジュールとしてhome-managerを統合 (`home-manager.useUserPackages = true`)
-
 ## 参考リポジトリ
 
-下のリンクが私のdotfilesレポジトリです。必要に応じて参照してください
-<https://github.com/nazozokc/Dotfiles>
+<https://github.com/nazozokc/dotfiles>
 
-下の3つのリンクは私がnix環境を実現するに当たって参照したレポジトリです、必要に応じて参照してください。
 **一番参照**
 <https://github.com/ryoppippi/dotfiles>
 

@@ -26,6 +26,12 @@
       "Bash(bun:*)",
       "Bash(deno:*)"
     ],
-    "deny": ["Bash(sudo:*)", "Bash(curl:*)", "Bash(wget:*)", "Bash(rm -rf /:*)"]
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf  /*)",
+      "Bash(rm -rf /* *)",
+      "Bash(rm -rf  /* *)"
+    ]
   }
 }

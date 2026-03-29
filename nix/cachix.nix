@@ -1,13 +1,15 @@
 # minimal-binary-cache.nix
-# Official cache.nixos.org only
+# Binary cache configuration
 
 let
   substituters = [
     "https://cache.nixos.org/"
+    "https://cache.numtide.com"
   ];
 
   trustedPublicKeys = [
     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    "cache.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
   ];
 in
 {
