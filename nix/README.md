@@ -25,7 +25,6 @@
 - 言語：python312, nodejs, bun, deno, rustc
 - LSP/フォーマッタ：rust-analyzer, nil, nixd, nixfmt, stylua
 - Git 関連：git, gh, ghq, lazygit, gitui
-- GUI：wezterm, ghostty
 
 ### Linux 専用パッケージ (`nix/modules/linux/system.nix`)
 

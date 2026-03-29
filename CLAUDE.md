@@ -16,12 +16,9 @@
 - fish
 - zsh
 - lazygit
-- wezterm
-- ghostty
 - opencode
 - starship
 - bash
-- efm-langserver
 
 # 回答スタイル
 
