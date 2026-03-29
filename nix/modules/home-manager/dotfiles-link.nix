@@ -15,5 +15,9 @@ in
     ".zshrc".source = link "${dotfilesDir}/zsh/zshrc";
     ".bashrc".source = link "${dotfilesDir}/bash/bashrc";
     ".config/lazygit".source = link "${dotfilesDir}/lazygit";
+
+    # opencode
+    ".config/opencode/opencode.json".source = link "${dotfilesDir}/opencode/opencode.json";
+    ".config/opencode/tui.json".source = link "${dotfilesDir}/opencode/tui.json";
   };
 }
