@@ -83,7 +83,7 @@ nix run .#update
 
 ## Activity
 
-![Alt](https://repobeats.axiom.co/api/embed/c4db566c918002010974abbbcc1ee5150bed51da.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/6db611309bf5ffac5cfb2d18f1363d48018c8e5a.svg "Repobeats analytics image")
 
 ---
 
